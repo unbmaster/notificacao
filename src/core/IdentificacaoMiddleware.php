@@ -20,21 +20,23 @@ use Slim\Psr7\Response;
  * @version 0.1.0
  */
 class IdentificacaoMiddleware
-{   
+{
     public function __invoke(Request $request, RequestHandler $handler): Response
     {
         $response = $handler->handle($request);
         $token = JWT::getTokenFromHeader($request);
+
+        if(!$token && isset($_REQUEST['token'])) {
+            $token = filter_var($_REQUEST['token'], FILTER_SANITIZE_STRING);
+        }
 
         if ($token && JWT::isValidToken($token) && JWT::isUserRole($token)) {
             $response = $response->withHeader('Authorization',  "Bearer $token");
         }
         else {
             $uri = $request->getUri();
-            $url = preg_replace('/:\d+\/\w+$/', ':4431/login', $uri);
-            return $response->withHeader('Location', $url)->withStatus(302);
-            #$response = new Response();
-            #return $response->withStatus(401); # 401 Unauthorized
+            $response = new Response();
+            return $response->withStatus(401); # 401 Unauthorized
         }
         return $response;
     }

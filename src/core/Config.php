@@ -18,6 +18,15 @@ class Config
 {
     public function __invoke($path)
     {
+        return self::run($path);
+    }
+
+    public static function get($path)
+    {
+        return self::run($path);
+    }
+
+    public function run($path) {
         $node = explode('.', $path);
         $result = null;
         $filename = filter_var ( $node[0], FILTER_SANITIZE_STRING);

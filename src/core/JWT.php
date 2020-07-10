@@ -8,6 +8,8 @@
 
 namespace Core;
 
+use PHPUnit\Exception;
+
 /**
  * JWT class
  *
@@ -68,9 +70,25 @@ class JWT
 
     public static function getTokenFromHeader($request)
     {
-        $token = $request->getHeaderLine('Authorization');
-        $token = str_replace('Bearer ', '', $token);
-        return $token;
+        try {
+            $token = $request->getHeaderLine('Authorization');
+            $token = str_replace('Bearer ', '', $token);
+            return $token;
+        }
+        catch (\Exception $e) {
+            return false;
+        }
+    }
+
+    public static function getCorrelationIdFromHeader($request)
+    {
+        try {
+            $correlationId = $request->getHeaderLine('X-Correlation-Id');
+            return $correlationId;
+        }
+        catch (\Exception $e) {
+            return false;
+        }
     }
 
     /**
