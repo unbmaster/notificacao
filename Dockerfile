@@ -15,11 +15,6 @@ COPY ./docker/php/custom-www.conf       /etc/php/7.3/fpm/pool.d/www.conf
 COPY ./docker/php/custom-php.ini        /etc/php/7.3/cli/php.ini
 COPY ./                                 /var/www
 
-# SQLite
-RUN mkdir -p /db
-COPY ./docker/sqlite                    /db
-RUN sqlite3 /db/plano.db < /db/plano.sql
-
 COPY ./docker/build.sh                  /
 RUN chmod +x /build.sh
 CMD ["/build.sh"]
